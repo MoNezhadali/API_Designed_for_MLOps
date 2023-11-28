@@ -1,0 +1,48 @@
+from flask import Flask, request, jsonify
+from datetime import datetime
+import re
+
+app = Flask(__name__)
+
+def calculate_age_category(birthdate, request_datetime):
+    if not birthdate:
+        return "no_age"
+
+    birthdate = datetime.strptime(birthdate, "%Y-%m-%d")
+    age = (request_datetime - birthdate).days // 365
+
+    if age < 18:
+        return "under_age"
+    elif age <= 25:
+        return "18-25"
+    elif age <= 50:
+        return "26-50"
+    else:
+        return "51-older"
+
+def count_consecutive_digits(email):
+    if not email:
+        return 0
+
+    username = email.split('@')[0]
+    return max([len(match) for match in re.findall(r'\d+', username)] + [0])
+
+@app.route('/predict', methods=['POST'])
+def predict():
+    data = request.json
+    request_datetime = datetime.now()  # or parse from request, if provided
+
+    age_category = calculate_age_category(data.get("birthdate"), request_datetime)
+    consecutive_digits = count_consecutive_digits(data.get("email"))
+
+    # Here, you would call your model's prediction function, e.g., model.predict(features)
+    # For this example, we'll just return the calculated features
+    response = {
+        "age_category": age_category,
+        "consecutive_digits_username": consecutive_digits
+    }
+
+    return jsonify(response)
+
+if __name__ == '__main__':
+    app.run(debug=True)

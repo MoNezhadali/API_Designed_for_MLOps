@@ -1,12 +1,23 @@
-from dateutil.parser import parse as dateparser
+# Built-in python libraries
+import logging
 import re
+# Side-packages
+from dateutil.parser import parse as dateparser
+
 
 def process_input_data(input_data):
-    processed_data = input_data
-    processed_data['age_category'] = calculate_age_category(input_data['BirthDate'], input_data['RequestDateTime'])
-    processed_data['consecutive_digits_username'] = count_consecutive_digits(input_data['Email'])
-    # Add other necessary processing steps here
-    return processed_data
+    try:
+        processed_data = input_data
+        processed_data['age_category'] = calculate_age_category(input_data['BirthDate'], input_data['RequestDateTime'])
+        processed_data['consecutive_digits_username'] = count_consecutive_digits(input_data['Email'])
+        return processed_data
+    except KeyError as e:
+        logging.error(f"Key error in input data: {e}")
+        raise
+    except Exception as e:
+        logging.error(f"Error processing input data: {e}")
+        raise
+
 
 def calculate_age_category(birthdate_str, request_datetime_str):
     try:
@@ -23,14 +34,28 @@ def calculate_age_category(birthdate_str, request_datetime_str):
             return "26-50"
         else:
             return "51-older"
-    except
+    except Exception as e:
+        logging.error(f"Error in calculate_age_category: {str(e)}")
+        return "no_age"
 
 def count_consecutive_digits(email):
-    if not email or "@" not in email:
-        return 0
     try:
+        if not email or "@" not in email:
+            return 0
         username = email.split('@')[0]
         return max([len(match) for match in re.findall(r'\d+', username)] + [0])
     except Exception as e:
-        return str(e)
+        logging.error(f"Error in calculate_age_category: {str(e)}")
+        return 0
+    
+def check_input_necessities(input_data):
+    if input_data is None:
+        raise ValueError("No JSON data provided or JSON data is invalid")
+    necessities_list=[ 'GrossAmount', 'NumberOfPayments', 'EMCResult', 'Merchant']
+    missing_items=[item for item in necessities_list if item not in input_data]
+    if missing_items:
+        raise ValueError(f"Missing necessary items: {missing_items}")
+    return True
+
+    
         # raise UnexpectedError(str(f"Unexpected error in counting consecutive digits in Email: {e}"))

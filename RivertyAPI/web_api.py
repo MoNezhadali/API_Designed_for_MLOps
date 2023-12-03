@@ -2,7 +2,7 @@
 import logging
 # Side-packages
 from flask import Flask, request, jsonify
-# internal imports
+# Internal imports
 from model_interface import ModelInterface
 from utilities import check_input_necessities
 
@@ -51,4 +51,4 @@ def predict():
         return jsonify({'error': 'Internal server error', 'status': 500}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=8080)

@@ -2,7 +2,7 @@
 import logging
 # Side-packages
 import pandas as pd
-# internal imports
+# Internal imports
 from utilities import process_input_data
 
 class ModelInterface:
@@ -28,6 +28,12 @@ class ModelInterface:
             transformed_data = self.pipeline.transform(processed_data)
             prediction = self.model.predict_proba(transformed_data)
             return prediction
+        except ValueError as e:
+            logging.error(f"Value error: {e}")
+            if "no_age" or "under_age" in str(e):
+                raise ValueError("Either no customer age, minor customer, or invalid request time!") from e    
+            else:
+                raise
         except Exception as e:
             logging.error(f"Error in prediction: {e}")
             raise

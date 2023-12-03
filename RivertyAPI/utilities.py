@@ -13,6 +13,11 @@ def process_input_data(input_data):
         return processed_data
     except KeyError as e:
         logging.error(f"Key error in input data: {e}")
+        if 'Email' in str(e):
+            processed_data['consecutive_digits_username'] = 0
+            return processed_data
+        if 'BirthDate' in str(e):
+            raise ValueError("No BirthDate entry in json input") from e
         raise
     except Exception as e:
         logging.error(f"Error processing input data: {e}")
@@ -51,11 +56,8 @@ def count_consecutive_digits(email):
 def check_input_necessities(input_data):
     if input_data is None:
         raise ValueError("No JSON data provided or JSON data is invalid")
-    necessities_list=[ 'GrossAmount', 'NumberOfPayments', 'EMCResult', 'Merchant']
+    necessities_list=[ 'BirthDate', 'GrossAmount', 'NumberOfPayments', 'EMCResult', 'Merchant']
     missing_items=[item for item in necessities_list if item not in input_data]
     if missing_items:
         raise ValueError(f"Missing necessary items: {missing_items}")
     return True
-
-    
-        # raise UnexpectedError(str(f"Unexpected error in counting consecutive digits in Email: {e}"))

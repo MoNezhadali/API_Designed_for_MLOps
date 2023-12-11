@@ -3,7 +3,7 @@ import logging
 # Side-packages
 import pandas as pd
 # Internal imports
-from utilities import process_input_data
+from .utilities import process_input_data
 
 class ModelInterface:
     """

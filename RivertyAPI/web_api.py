@@ -3,8 +3,8 @@ import logging
 # Side-packages
 from flask import Flask, request, jsonify
 # Internal imports
-from model_interface import ModelInterface
-from utilities import check_input_necessities
+from .model_interface import ModelInterface
+from .utilities import check_input_necessities
 
 # internal imports
 
